@@ -13,3 +13,9 @@ def home():
         "message": "Welcome to Task Management API",
         "status": "running"
     }
+
+from app.tasks import tasks
+
+@app.get("/tasks")
+def get_all_tasks():
+    return tasks
