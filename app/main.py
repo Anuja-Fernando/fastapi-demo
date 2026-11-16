@@ -1,4 +1,6 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
+from app.tasks import tasks, next_task_id
+from app.models import Task
 
 app = FastAPI(
     title="Task Management API",
@@ -14,7 +16,6 @@ def home():
         "status": "running"
     }
 
-from app.tasks import tasks
 
 @app.get("/tasks")
 def get_all_tasks():
@@ -23,6 +24,15 @@ def get_all_tasks():
 @app.post("/tasks")
 def create_task(task: Task):
     global next_task_id
+
+    new_task = task.model_copy(
+        update={"id": next_task_id}
+    )
+
+    tasks.append(new_task.model_dump())
+    next_task_id += 1
+
+    return new_task
 
 
 @app.put("/tasks/{task_id}")
