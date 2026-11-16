@@ -15,6 +15,7 @@ from app.tasks import tasks
 @app.get("/tasks")
 def get_all_tasks():
     return tasks
+
 @app.post("/tasks")
 def create_task(task: Task):
     global next_task_id
@@ -30,3 +31,19 @@ def create_task(task: Task):
 
 
     return new_task
+
+@app.delete("/tasks/{task_id}")
+def delete_task(task_id: int):
+
+    for task in tasks:
+        if task["id"] == task_id:
+            tasks.remove(task)
+
+            return {
+                "message": "Task deleted successfully",
+                "deleted_task": task
+            }
+
+    return {
+        "message": "Task not found"
+    }
